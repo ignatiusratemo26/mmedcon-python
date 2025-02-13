@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import openai
+from openai import OpenAI
 from dotenv import load_dotenv
 import os
 
@@ -9,7 +9,7 @@ CORS(app)
 
 load_dotenv()
 
-openai.api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key = os.getenv('OPENAI_API_KEY'),)
 
 @app.route('/hello', methods=['GET'])
 def hello_world():
@@ -24,7 +24,7 @@ def ask_chatgpt():
         return jsonify({"error": "No question provided"}), 400
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
