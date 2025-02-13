@@ -5,9 +5,10 @@ from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app) 
 
-# Set your OpenAI API key
+load_dotenv()
+
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 @app.route('/hello', methods=['GET'])
@@ -23,12 +24,15 @@ def ask_chatgpt():
         return jsonify({"error": "No question provided"}), 400
 
     try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=question,
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": question}
+            ],
             max_tokens=150
         )
-        answer = response.choices[0].text.strip()
+        answer = response.choices[0].message['content'].strip()
         return jsonify({"answer": answer})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
