@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/*": {"origins": "https://www.mmedcon.com"}}) 
+
 
 load_dotenv()
 
